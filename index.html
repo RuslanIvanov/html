@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Default page upu</title>
+    <!--тут объектами надо работать 1 obj -1 scvs-->
+    <link href="Style/StyleDefPage.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="lib/httprequest.js"></script>
+    <script type="text/javascript" src="lib/pinger.js"></script>
+    <script type="text/javascript" language="javascript">
+    
+    var nameUpu;
+    var url = "http://192.168.2.14/mic_pc/ParentWindow.htm";
+             
+    function onLoadDef()
+    {
+	nameUpu=document.domain;
+ 	url = "http://"+nameUpu+"/mic_pc/ParentWindow.htm";
+	var ref = document.getElementById("ref1");
+        ref.href=url;
+    }
+   
+   </script>
+</head>
+<body onload = "onLoadDef()">
+
+    <hr color="blue"/>
+    <center>DEFAULT PAGE UPU7</center>
+    <center>Operating system Linux Embedded</center>
+    <hr color="blue"/>
+    <a href="" id = "ref1"> "upu"</a>&nbsp;&nbsp;&nbsp;
+
+</body>
+</html>

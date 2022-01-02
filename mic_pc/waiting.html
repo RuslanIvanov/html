@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    	<title>waiting</title>
+
+		<!--<link href="../Style/StyleDefPage.css" rel="stylesheet" type="text/css" />-->
+    	<script type="text/javascript" src="../lib/prototype.js"></script>
+		<script type="text/javascript" src="../lib/httprequest.js"></script>
+		<script language="javascript" type="text/javascript">
+
+		var idTimeout = 0;
+		var count=0;
+		var fStartTimer=false;
+
+		function clear()
+		{        
+			$("idMessage").update('...');        
+		}
+		
+		function startTimer()
+		{
+		   	if(fStartTimer==false)
+			{   
+				    $('idMessage').update("[0"+"]");
+				    idTimeout = setInterval(function(){ run(); }, 1000);
+				    fStartTimer=true;
+			}
+		}
+				
+		function stopTimer()
+		{
+			count=0;
+			clearInterval(idTimeout);
+			fStartTimer = false;
+		}
+				
+		function run()
+		{
+			count++;
+			
+			if(count>120) //
+			{
+				$('idMessage_long').update("[It is wery long!]");
+				if(count>125)
+				{ 
+					OnClose();
+				}
+			}
+		
+
+			$('idMessage').update("["+count+"]");
+			update();
+
+			
+		}
+			 
+		function RunTimer()
+		{
+			   if(fStartTimer==true) return;
+			   clear();
+			  
+			   setTimeout("", 1000);
+			   startTimer();
+		}  
+
+		function OnLoad()
+		{
+			startTimer();//	document.addEventListener('unload', () => { OnClose();} );		
+		}
+
+		function OnClose()
+		{
+			//alert("OnClose");
+			stopTimer();
+			close();
+		}
+		
+</script>
+</head>
+ 
+<body id="body_wait" onload="OnLoad()">
+     <h3>Waiting</h3>
+     <fieldset>
+     <legend>Process running on board:</legend>	
+     <div id="idMessage"></div>
+     <div id="idMessage_long"></div>
+	
+	<!--
+	<div class="b-container">
+	    Sample Text
+	</div>
+	<div class="b-popup">
+	    <div class="b-popup-content">
+		Text in Popup
+	    </div>
+	</div>-->
+
+     </fieldset>
+</body>
+ 
+</html>

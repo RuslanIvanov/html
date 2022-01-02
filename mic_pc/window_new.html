@@ -1,0 +1,38 @@
+<head>    
+<style>
+.disableWin{
+     pointer-events: none;
+}
+</style>
+<script type="text/javascript">
+    function openPopUp(url) {
+      disableParentWin(); 
+      var win = window.open(url);
+      win.focus();
+      checkPopUpClosed(win);
+    }
+    /*Function to detect pop up is closed and take action to enable parent window*/
+   function checkPopUpClosed(win) {
+         var timer = setInterval(function() {
+              if(win.closed) {
+                  clearInterval(timer);                  
+                  enableParentWin();
+              }
+          }, 1000);
+     }
+     /*Function to enable parent window*/ 
+     function enableParentWin() {
+          window.document.getElementById('mainDiv').class="";
+     }
+     /*Function to enable parent window*/ 
+     function disableParentWin() {
+          window.document.getElementById('mainDiv').class="disableWin";
+     }
+
+</script>
+</head>
+
+<body>
+<div id="mainDiv class="">
+</div>
+</body> 

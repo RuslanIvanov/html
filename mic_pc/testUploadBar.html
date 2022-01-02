@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="../lib/prototype.js"></script>
+<script type="text/javascript" src="../lib/httprequest.js"></script>
+<script language="javascript" type="text/javascript">
+/* Script written by Adam Khoury @ DevelopPHP.com */
+/* Video Tutorial: http://www.youtube.com/watch?v=EraNFJiY0Eg */
+
+var idTimeout = 0;
+var count=0;
+var fStartTimer=false;
+var fileSize=0;
+
+function clear()
+{        
+    $("idMessage").update('...');        
+}
+    
+function startTimer()
+{
+   	if(fStartTimer==false)
+	{   
+            $('idMessage').update("[0"+"]");
+            idTimeout = setInterval(function(){ run(); }, 1000);
+            fStartTimer=true;
+	}
+}
+        
+function stopTimer()
+{
+	count=0;
+    clearInterval(idTimeout);
+    fStartTimer = false;
+}
+        
+function run()
+{
+	count++;
+	$('idMessage').update("["+count+"]");
+	update();
+}
+     
+function RunTimer()
+{
+       if(fStartTimer==true) return;
+       clear();
+      
+       setTimeout("", 1000);
+       startTimer();
+}  
+
+function _(el)
+{
+	return document.getElementById(el);
+}
+
+function uploadFile()
+{
+	_("progressBar").value = 0;
+	_("status2").innerHTML="";
+
+	var file = _("filename").files[0];
+	if(file) 
+	{
+		RunTimer();
+		fileSize=file.size;
+		//alert(file.name+" | "+file.size+" | "+file.type);
+		var formdata = new FormData(upload_form);
+		formdata.append("filename", file);
+		var ajax = new XMLHttpRequest();
+		ajax.upload.addEventListener("progress", progressHandler, false);
+		ajax.addEventListener("load", completeHandler, false);
+		ajax.addEventListener("error", errorHandler, false);
+		ajax.addEventListener("abort", abortHandler, false);
+		ajax.open("POST", "upload_firmware_bpr.php");
+		ajax.send(formdata);
+	}else {  alert(" Error.File is "+file); }
+}
+
+function progressHandler(event)
+{
+	_("loaded_n_total").innerHTML = "Uploaded "+event.loaded+" bytes of "+event.total+". File size is: "+fileSize+" bytes.";
+	var percent = (event.loaded / event.total) * 100;
+	_("progressBar").value = Math.round(percent);
+	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+}
+
+function completeHandler(event)
+{//перейтина новую страницу...
+	//_("status2").innerHTML = event.target.responseText;
+	//_("progressBar").value = 0;
+
+	stopTimer();
+	//var w = window.open("");// создаст новое окно
+	document.writeln(event.target.responseText);
+	document.close();
+}
+
+function errorHandler(event)
+{
+	_("status2").innerHTML = "Upload Failed";
+	stopTimer();
+}
+
+function abortHandler(event){
+	_("status2").innerHTML = "Upload Aborted";
+	stopTimer();
+}
+
+</script>
+</head>
+<body>
+<h2>Upload (Progress Bar)</h2>
+<form id="upload_form" enctype="multipart/form-data" method="post">
+  <input type="file" name="filename" id="filename"><br>
+  <input type="button" value="Upload File" onclick="uploadFile()"><br>
+  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
+	  <fieldset>
+	  <legend>Usage script:</legend>		
+	  <input type='radio' name = 'mark' value=1 checked/>by using 'start_upload_bpr.sh' </br>		  	
+	  <fieldset>
+	  <legend>Set devices:</legend>		
+	  	<input type='radio' name = 'mark2' value=1 checked/>tam3517 </br>	
+	  	<input type='radio' name = 'mark2' value=2 />imx6 </br>		
+  	  </fieldset>
+	  </fieldset>
+  <input type='radio' name = 'mark' value=3 />Only load firmware on board</br>
+  </br>
+  <fieldset>  
+  <legend>Process loading file:</legend>	
+  <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+  <p id="loaded_n_total">load total:</p>
+  <div id="status">status:</div>
+  </fieldset>
+  <fieldset>
+  <legend>Process running on board:</legend>	
+  <div id="idMessage"></div>
+  </fieldset>
+  </br>
+  <div id="status2">status2:</div>  
+</form>
+</body>
+</html>
+

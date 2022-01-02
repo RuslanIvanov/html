@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}	
+/*body {overflow: hidden; }*//* Hide scrollbars */
+</style>
+
+<title>Upload file on server</title>
+<script type="text/javascript" src="../lib/prototype.js"></script>
+<script type="text/javascript" src="../lib/httprequest.js"></script>
+<script language="javascript" type="text/javascript">
+/* Script written by Adam Khoury @ DevelopPHP.com */
+/* Video Tutorial: http://www.youtube.com/watch?v=EraNFJiY0Eg */
+
+var idTimeout = 0;
+var count=0;
+var fStartTimer=false;
+var fileSize=0;
+var myWindow=null;
+var parentWindow = null;
+
+function on() 
+{
+	document.getElementById("overlay").style.display = "block";
+}
+
+function off() 
+{
+	document.getElementById("overlay").style.display = "none";
+} 
+
+function makePopupWindow()
+{
+	var w = 280, h = 200,
+	left = Number((screen.width/2)-(w/2)), tops = Number((screen.height/2)-(h/2));
+        myWindow = window.open
+		('waiting.html', 'Waiting','toolbar=no, location=no, directories=no, status=no, menubar=no,scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+tops+', left='+left);
+
+	//myWindow = window.open('waiting.html', 'wait', "width=250, height=250");	
+	myWindow.focus(); 
+}
+
+function myWindowClose()
+{	
+	if(myWindow) 	
+	{
+		myWindow.close();		
+		myWindow=null;
+    }
+}
+
+function sleep(milliseconds) 
+{
+	  const date = Date.now();
+	  let currentDate = null;
+	  do{
+	  	  currentDate = Date.now();
+	  } while (currentDate - date < milliseconds);
+}
+
+function clear()
+{        
+    $("idMessage").update('...');        
+}
+    
+function startTimer()
+{
+   	if(fStartTimer==false)
+	{   
+            $('idMessage').update("[0"+"]");
+            idTimeout = setInterval(function(){ run(); }, 1000);
+            fStartTimer=true;	   
+	}
+}
+        
+function stopTimer()
+{
+    count=0;
+    clearInterval(idTimeout);
+    fStartTimer = false;
+    off();   
+}
+        
+function run()
+{
+	count++;
+	$('idMessage').update("["+count+"]");
+	update();
+
+}
+     
+function RunTimer()
+{
+       if(fStartTimer==true) return;
+       clear();
+      
+       setTimeout("", 1000);
+       startTimer();
+       on();
+}  
+
+function _(el)
+{
+	return document.getElementById(el);
+}
+
+function GetBarsInfo() 
+{
+            var info = document.getElementById ("info");
+            if (window.directories) {
+                var vis = window.directories.visible ? "visible" : "not visible";
+                info.innerHTML += "Directories Bar: " + vis + "</br >";
+            }
+            if (window.locationbar) {
+                var vis = window.locationbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Location Bar: " + vis + "</br >";
+            }
+            if (window.menubar) {
+                var vis = window.menubar.visible ? "visible" : "not visible";
+                info.innerHTML += "Menu Bar: " + vis + "</br >";
+            }
+            if (window.personalbar) {
+                var vis = window.personalbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Personal Bar: " + vis + "</br >";
+            }
+            if (window.scrollbars) {
+                var vis = window.scrollbars.visible ? "visible" : "not visible";
+                info.innerHTML += "Scrollbars: " + vis + "</br >";
+            }
+            if (window.statusbar) {
+                var vis = window.statusbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Status Bar: " + vis + "</br >";
+            }
+            if (window.toolbar) {
+                var vis = window.toolbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Tool Bar: " + vis + " "+window.toolbar.visible+" </br >";
+            }
+
+	    info.innerHTML += "key: " +sessionStorage.getItem('key')+" </br >"; 
+	    info.innerHTML += "parentWindow: " +parentWindow+",name "+parentWindow.windowName+" </br >"; 
+}
+
+function uploadFile()
+{
+	_("progressBar").value = 0;
+	_("status2").innerHTML="";
+	
+	var file = _("filename").files[0];
+	if(file) 
+	{
+
+		makePopupWindow();
+		setTimeout(myWindowClose, 12000000);
+
+		RunTimer();				
+	
+		fileSize=file.size; // провевить на hex
+		document.getElementById("btn_upload_bpr").disabled = true; 
+		
+		var formdata = new FormData(upload_form);
+		formdata.append("filename", file);
+		var ajax = new XMLHttpRequest();
+		ajax.upload.addEventListener("progress", progressHandler, false);
+		ajax.addEventListener("load", completeHandler, false);
+		ajax.addEventListener("error", errorHandler, false);
+		ajax.addEventListener("abort", abortHandler, false);
+		ajax.open("POST", "upload_firmware_bpr.php");
+		ajax.send(formdata);
+
+		
+	}else {  alert(" Error.File is "+file); }
+}
+
+function progressHandler(event)
+{
+	_("loaded_n_total").innerHTML = "Uploaded "+event.loaded+" bytes of "+event.total+". File size is: "+fileSize+" bytes.";
+	var percent = (event.loaded / event.total) * 100;
+	_("progressBar").value = Math.round(percent);
+	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+
+}
+
+function completeHandler(event)
+{//перейтина новую страницу...
+	//_("status2").innerHTML = event.target.responseText;
+	//_("progressBar").value = 0;
+
+	myWindowClose();
+	stopTimer();
+	
+	document.getElementById("btn_upload_bpr").disabled = false; 
+	//var w = window.open("");// создаст новое окно
+	document.writeln(event.target.responseText);
+	document.close();
+}
+
+function errorHandler(event)
+{
+	_("status2").innerHTML = "Upload Failed";
+	stopTimer();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+}
+
+function abortHandler(event){
+	_("status2").innerHTML = "Upload Aborted";
+	stopTimer();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+}
+
+function OnLoad()
+{	
+	alert("OnLoad second");
+	parentWindow = window.parent;
+	document.getElementById("btn_upload_bpr").disabled = false; 
+	GetBarsInfo();
+	//addEventListener("beforeunload", myScript);
+	
+}
+
+
+</script> 
+</head>
+<body id="body_upload" onload="OnLoad()" onunload="UnLoad()" > 
+      <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
+
+      <h2><p><b> Upload kernel modules</b></p></h2>
+      <form action="upload_modules.php" method="post" enctype="multipart/form-data">
+	  <fieldset>
+	  <legend>Set kernel version:</legend>		
+	  <input type='radio' name = 'mark3' value=1 checked /> 2.6.37 </input>&nbsp;&nbsp;&nbsp;	
+	  <input type='radio' name = 'mark3' value=2 />4.9.11 </br>		
+	  </fieldset>
+      <input type="file" name="filename" accept=".ko"><br> 
+      <input type="submit" value="Upload"><br>
+      </form>
+     
+	  <h2><p><b> Upload UPU executable soft</b></p></h2>
+	  <form action="upload_bin.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>	
+
+      <h2><p><b> Upload UPU libs</b></p></h2>
+      <form action="upload_libs.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename" accept=".so"><br>
+      <input type="submit" value="Upload"><br>
+      </form>
+
+	  <h2><p><b> Upload firmware with 'upload_brp'</b></p></h2>
+	  <form id="upload_form" enctype="multipart/form-data" method="post">
+  		<input type="file" name="filename" id="filename" accept=".hex, .bin"><br>
+	  <input type="button" id="btn_upload_bpr" value="Upload File" onclick="uploadFile()"><br>
+	  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
+		  <fieldset>
+		  <legend>Usage script:</legend>		
+		  <input type='radio' name = 'mark' value=1 checked/>by using 'start_upload_bpr.sh' </br>		  	
+		  <fieldset>
+		  <legend>Set devices:</legend>		
+		  	<input type='radio' name = 'mark2' value=1 checked/>tam3517 </br>	
+		  	<input type='radio' name = 'mark2' value=2 />imx6 </br>		
+	  	  </fieldset>
+		  </fieldset>
+	  <input type='radio' name = 'mark' value=3 />Only load firmware on board</br>
+	  </br>
+	  <fieldset>  
+	  <legend>Process loading file:</legend>	
+	  <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+	  <p id="loaded_n_total">load total:</p>
+	  <div id="status">status:</div>
+	  </fieldset>
+	  <fieldset>
+	  <legend>Process running on board:</legend>	
+	  <div id="idMessage"></div>
+	  </fieldset>
+	  </br>
+	  <div id="status2">status2:</div>  
+	  </form>
+
+	  <h2><p><b> Load firmware on board (any formats)</b></p></h2>
+      <form action="load_firmware_bpr.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Load file"><br>
+      </form>	
+      <div id="info"></div>
+      <div id="overlay"></div>    
+
+<script>
+	
+	parentWindowBody = window.parent;
+	alert("body (first): "+parentWindowBody);
+
+	window.onbeforeunload = function(e)
+	{
+		//alert("onbeforeunload");// this don't work
+		parentWindowBody.myWindowClose();
+
+		var dialogText = 'Exit &';
+		e.returnValue = dialogText;
+  		return dialogText;		
+	}
+	
+	function UnLoad()
+	{
+   	     	alert("UnLoad windows");
+       		parentWindowBody.myWindowClose();
+	}
+	
+</script>
+
+</body>
+</html>

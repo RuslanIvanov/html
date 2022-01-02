@@ -1,0 +1,179 @@
+<html>
+<head>
+  <title>Upload file on server</title>
+</head>
+
+<script type="text/javascript" src="../lib/prototype.js"></script>
+<script type="text/javascript" src="../lib/httprequest.js"></script>
+<script language="javascript" type="text/javascript">
+/* Script written by Adam Khoury @ DevelopPHP.com */
+/* Video Tutorial: http://www.youtube.com/watch?v=EraNFJiY0Eg */
+
+ 	var idTimeout = 0;
+    var count=0;
+    var fStartTimer=false;
+    
+    function clear()
+    {        
+        $("idMessage").update('...');        
+    }
+    
+    function startTimer()
+    {
+        if(fStartTimer==false)
+        {   
+            $('idMessage').update("["+"]");
+            idTimeout = setInterval(function(){ run(); }, 1000);
+            fStartTimer=true;
+        }
+    }
+        
+    function stopTimer()
+    {
+         count=0;
+         clearInterval(idTimeout);
+         fStartTimer = false;
+    }
+        
+    function run()
+    {
+         count++;
+         $('idMessage').update("["+count+"]");
+         update();
+    }
+     
+    function OnClickT()
+    {
+       if(fStartTimer==true) return;
+       clear();
+      
+       setTimeout("", 1000);
+       startTimer();
+    }  
+
+function _(el)
+{
+	return document.getElementById(el);
+}
+
+function uploadFile()
+{
+	var file = _("file1").files[0];
+	
+	alert(file.name+" | "+file.size+" | "+file.type);
+
+	var formdata = new FormData();
+	formdata.append("file1", file);
+	var ajax = new XMLHttpRequest();
+	ajax.upload.addEventListener("progress", progressHandler, false);
+	ajax.addEventListener("load", completeHandler, false);
+	ajax.addEventListener("error", errorHandler, false);
+	ajax.addEventListener("abort", abortHandler, false);
+	ajax.open("POST", "upload_firmware_bpr.php");
+	ajax.send(formdata);
+}
+
+function progressHandler(event)
+{
+	//alert("progressHandler");
+	_("loaded_n_total").innerHTML = "Uploaded "+event.loaded+" bytes of "+event.total;
+	var percent = (event.loaded / event.total) * 100;
+	_("progressBar").value = Math.round(percent);
+	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+}
+
+function completeHandler(event)
+{
+	_("status").innerHTML = event.target.responseText;
+	_("progressBar").value = 0;
+}
+
+function errorHandler(event)
+{
+	_("status").innerHTML = "Upload Failed";
+}
+
+function abortHandler(event)
+{
+	_("status").innerHTML = "Upload Aborted";
+}
+
+document.forms.upload.onsubmit = function() 
+	{
+			var input = this.elements.myfile;
+			var file = input.files[0];
+
+			
+
+			alert("file is:  "+file);
+			if (file) 
+			{
+			  upload(file);
+			  return true;	
+			}
+			return false;
+	}
+
+function formValidation() {
+  alert("Valid form");
+  //return false;
+	stopTimer();
+	return true;
+}
+
+</script>
+
+<body>
+      <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
+
+      <h2><p><b> Upload kernel (2.6.37) or (4.9.11) modules</b></p></h2>
+      <form action="upload_modules_old.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br> 
+      <input type="submit" value="Upload(2.6.37)"><br>
+      </form>
+      <p>...</p>
+      <form action="upload_modules.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload(4.9.11)"><br>
+      </form>
+	
+	  <h2><p><b> Upload UPU executable soft</b></p></h2>
+	  <form action="upload_bin.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>	
+
+      <h2><p><b> Upload UPU libs</b></p></h2>
+      <form action="upload_libs.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>
+
+	  <h2><p><b> Upload firmware with 'upload_brp'</b></p></h2>
+      <form action="upload_firmware_bpr.php" method="post" enctype="multipart/form-data" onsubmit="return formValidation()" >
+      <!--<form id="upload_form" enctype="multipart/form-data" method="post">-->
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload firmware" onclick="OnClickT()"><br>
+	  <input type='button' value="Upload firmware (BAR)" onclick="uploadFile()"><br>
+	  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
+	  <fieldset>
+	  <legend>Usage script:</legend>		
+	  <input type='radio' name = 'mark' value=1 checked/>by using 'start_upload_bpr.sh' </br>		  	
+	  <fieldset>
+	  <legend>Set devices:</legend>		
+	  	<input type='radio' name = 'mark2' value=1 checked/>tam3517 </br>	
+	  	<input type='radio' name = 'mark2' value=2 />imx6 </br>		
+  	  </fieldset>
+	  </fieldset>
+	  <input type='radio' name = 'mark' value=3 />Only load firmware on board</br>
+	  <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>	
+	  <div id="idMessage"></div>	
+      </form>
+	  <h2><p><b> Load firmware on board</b></p></h2>
+      <form action="load_firmware_bpr.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Load file"><br>
+      </form>	
+
+</body>
+</html>

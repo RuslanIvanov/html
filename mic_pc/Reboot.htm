@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head >
+
+    <title>Reboot</title>
+    <script type="text/javascript" src="../lib/prototype.js"></script>
+    <script type="text/javascript" src="../lib/httprequest.js"></script>
+    <script language="javascript" type="text/javascript">
+  
+    var idTimeout = 0;
+    var count=0;
+    var fStartTimer=false;
+    
+    function clear()
+    {
+        $("idHeaderHttp").update('...');
+        $("idMessage").update('...');
+        $("idTimer").update('...');    
+    }
+    
+    function startTimer()
+    {
+        if(fStartTimer==false)
+        {   
+            $('idTimer').update("["+"]");
+            idTimeout = setInterval(function(){ run(); }, 1000);
+            fStartTimer=true;
+        }
+    }
+        
+    function stopTimer()
+    {
+         count=0;
+         clearInterval(idTimeout);
+         fStartTimer = false;
+    }
+        
+    function run()
+    {
+         count++;
+         $('idTimer').update("["+count+"]");
+         update();
+    }
+     
+    function OnClick()
+    {
+       if(fStartTimer==true) return;
+       clear();
+       requestReboot();
+       setTimeout("", 1000);
+       startTimer();
+    }   
+    
+    function requestReboot()
+    {
+        try
+        {
+	
+	    $("idMessage").update('Rebootning...');
+	    var requestAddr = "http://"+document.domain+"/mic_pc/reboot.php?rnd=" + Math.random();
+
+            new Ajax.Request(requestAddr, 
+            {
+                method: 'get',
+                onSuccess: answerReboot,
+                onFailure: function(r){$('idMessage').update('Error request reboot: '+ r.statusText);}
+            }
+            );
+        }catch(e) {$('idMessage').update('Error requestReboot: '+ e);}
+    }
+    
+    	function answerReboot(r)
+    	{ }
+       
+    	function update()
+    	{
+    	    try
+    	    {
+    	        var helloUrl = "http://"+document.domain+"/mic_pc/wait.php?rnd=" + Math.random();
+    	        new Ajax.Request(helloUrl, 
+    	        {
+    	            method: 'get',
+    	            onSuccess: answerUpdate,
+    	            onFailure: function(r){$('idMessage').update('Error1 update: '+ r.statusText);}
+    	        }
+    	        );
+    	    }catch(e){$('idMessage').update('Error2 update: '+ e);}
+    	}
+    
+    	function answerUpdate(r)
+    	{
+      		var text = r.responseText;
+       		if(text.length>0)
+       		{
+            		stopTimer(); 
+            		$('idHeaderHttp').update(text);
+            		$('idMessage').update(''); 
+       		}
+    	}        
+            
+     	
+    	function OverLink(anchor) // Вход фокуса в область
+    	{
+    	   anchor.children[0].src = "../Images/focusreset.jpg";
+    	}
+    
+    	function OutLink(anchor) // Выход фокуса в область
+    	{
+    	    anchor.children[0].src = "../Images/resetnopush.jpg";
+    	}
+    
+    	function OnMouseDown(anchor)
+    	{
+        	anchor.children[0].src = "../Images/focusresetpush.jpg";
+	}
+	 
+	function OnMouseUp(anchor)
+	{
+	    anchor.children[0].src = "../Images/focusreset.jpg";
+	}
+	
+	function OnLoad()
+	{
+	    // перейти на исхоную страницу
+	    var picture = $('idPic');
+	    var pos= new Array();
+	    pos = getClientCenter();
+	    var pixel = "px";
+	    var ver= window.parent.parent.verNavigator;
+        if(ver=='IE') pixel="";
+    	$('idPic').setStyle({top: (pos[1])-(picture.height/2)+pixel, left: (pos[0])-(picture.width/2)+pixel,position: 'absolute'});
+	    window.history.deleteall;	
+	    fStartTimer = false;   
+	}
+	
+	/* вспомогательные функции получения размеров */
+    	// функция кроссбраузерного вычисления размеров документа 
+    	function getDocumentSize()
+    	{
+	    	return [
+	                document.body.scrollWidth > document.body.offsetWidth ? 
+	    	        document.body.scrollWidth : document.body.offsetWidth,
+	                document.body.scrollHeight > document.body.offsetHeight ? 
+		            document.body.scrollHeight : document.body.offsetHeight
+	           ];
+    	}
+
+    	// функция кроссбраузерного вычисления размеров рабочего окна браузера 
+    	function getClientSize()
+    	{
+	    if(document.compatMode=='CSS1Compat')
+		    return [document.documentElement.clientWidth, document.documentElement.clientHeight];
+	    else
+		    return [document.body.clientWidth, document.body.clientHeight];
+    	}
+    
+    	// функция кроссбраузерного вычисления значений скроллинга 
+    	function getDocumentScroll()
+    	{
+	    	return [self.pageXOffset || 
+	            (document.documentElement && document.documentElement.scrollLeft) 
+		        ||(document.body && document.body.scrollLeft), 
+	            self.pageYOffset || (document.documentElement && document.documentElement.scrollTop) 
+		        || (document.body && document.body.scrollTop)
+	           ];
+   	 }
+    
+    	// функция получения центра экрана
+	function getClientCenter()
+	{
+		var sizes = getClientSize();
+		var scrl = getDocumentScroll();
+		return [parseInt(sizes[0]/2)+scrl[0], parseInt(sizes[1]/2)+scrl[1]];
+	}
+
+
+	function resize() 
+	{ 
+		OnLoad();
+  	}
+
+	window.onresize = resize;
+    </script>
+    
+</head>
+<body id="idBody" onload="OnLoad()" style="background-color:White">
+
+      <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
+
+      <div id='idReboot'>
+	       <a title="Click" 
+	          onmouseover = 'OverLink(this)' 
+	          onmouseout  = 'OutLink(this)' 
+	          onclick     = 'OnClick()'
+	          onmousedown = 'OnMouseDown(this)'
+	          onmouseup   = 'OnMouseUp(this)'
+	          target="Work">
+	          <img id="idPic" src="../Images/resetnopush.jpg" alt=""/>
+	       </a><br/>
+	 </div>
+	 <span id="idHeaderHttp"></span>
+     <div id="idMessage"></div>
+     <span id="idTimer"></span>    
+</body>
+</html>

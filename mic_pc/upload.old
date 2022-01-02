@@ -1,0 +1,326 @@
+<html>
+<head>
+<title>Upload file on server</title>
+<script type="text/javascript" src="../lib/prototype.js"></script>
+<script type="text/javascript" src="../lib/httprequest.js"></script>
+<script language="javascript" type="text/javascript">
+/* Script written by Adam Khoury @ DevelopPHP.com */
+/* Video Tutorial: http://www.youtube.com/watch?v=EraNFJiY0Eg */
+
+var idTimeout = 0;
+var count=0;
+var fStartTimer=false;
+var fileSize=0;
+
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
+function clear()
+{        
+    $("idMessage").update('...');        
+}
+    
+function startTimer()
+{
+   	if(fStartTimer==false)
+	{   
+            $('idMessage').update("[0"+"]");
+            idTimeout = setInterval(function(){ run(); }, 1000);
+            fStartTimer=true;
+	}
+}
+        
+function stopTimer()
+{
+	count=0;
+    clearInterval(idTimeout);
+    fStartTimer = false;
+}
+        
+function run()
+{
+	count++;
+	$('idMessage').update("["+count+"]");
+	update();
+}
+     
+function RunTimer()
+{
+       if(fStartTimer==true) return;
+       clear();
+      
+       setTimeout("", 1000);
+       startTimer();
+}  
+
+function _(el)
+{
+	return document.getElementById(el);
+}
+
+function parent_disable() {
+
+	var popupWindow = window;
+if(popupWindow && !popupWindow.closed)
+popupWindow.focus();
+}
+
+function preventBack(){window.history.forward();}
+    
+function showmenu()
+{
+ //netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
+ window.menubar.visible=true;
+ window.directories.visible=true;
+ window.statusbar.visible=true;
+ window.toolbar.visible=true;
+ window.locationbar.visible=true;
+ window.personalbar.visible=true;
+ window.scrollbars.visible=true;
+ //netscape.security.PrivilegeManager.disablePrivilege("UniversalBrowserWrite");
+}   
+
+function hidemenu()
+{
+ //netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
+ window.menubar.visible=false;
+ window.directories.visible=false;
+ window.statusbar.visible=false;
+ window.toolbar.visible=false;
+ window.locationbar.visible=false;
+ window.personalbar.visible=false;
+ window.scrollbars.visible=false;
+ //netscape.security.PrivilegeManager.disablePrivilege("UniversalBrowserWrite");
+
+}
+
+
+//window.onpopstate = function () 
+//{
+    //window.history.go(1);  //window.history.go(0);  
+//};
+/*<script type="text/javascript">  function preventBack() {window.history.forward();}  setTimeout("preventBack()", 0);  window.onunload = function () {null};<script>	*/
+//function preventBack() 
+//{
+    // window.history.go(0);
+//}
+         
+//setTimeout("preventBack()", 90);
+         
+//window.onunload = function () { null };
+
+/*
+Note
+
+history.go(0) reloads the page.
+
+history.go(-1) is the same as history.back().
+
+history.go(1) is the same as history.forward().
+*/
+
+/*window.onbeforeunload = confirmExit;
+    function confirmExit() {
+        return "You have attempted to leave this page. Are you sure??";
+    }*/
+
+function GetBarsInfo() 
+{
+            var info = document.getElementById ("info");
+            if (window.directories) {
+                var vis = window.directories.visible ? "visible" : "not visible";
+                info.innerHTML += "Directories Bar: " + vis + "</br >";
+            }
+            if (window.locationbar) {
+                var vis = window.locationbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Location Bar: " + vis + "</br >";
+            }
+            if (window.menubar) {
+                var vis = window.menubar.visible ? "visible" : "not visible";
+                info.innerHTML += "Menu Bar: " + vis + "</br >";
+            }
+            if (window.personalbar) {
+                var vis = window.personalbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Personal Bar: " + vis + "</br >";
+            }
+            if (window.scrollbars) {
+                var vis = window.scrollbars.visible ? "visible" : "not visible";
+                info.innerHTML += "Scrollbars: " + vis + "</br >";
+            }
+            if (window.statusbar) {
+                var vis = window.statusbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Status Bar: " + vis + "</br >";
+            }
+            if (window.toolbar) {
+                var vis = window.toolbar.visible ? "visible" : "not visible";
+                info.innerHTML += "Tool Bar: " + vis + " "+window.toolbar.visible+" </br >";
+            }
+}
+
+function uploadFile()
+{
+	_("progressBar").value = 0;
+	_("status2").innerHTML="";
+
+
+	
+	//window.history.pushState(null, null, window.location.href);
+	//if(window.toolbar)
+	//{
+   // 	var vis = window.toolbar.visible ? "visible" : "not visible";
+	//	info.innerHTML += "Tool Bar: "+vis+"</br>";
+	//}
+
+	//window.history.deleteall;
+	//window.location.hash="no-back-button";
+	//window.location.hash="Again-no-back-button";//for google chrome
+	//window.onhashchange=function(){window.location.hash="no-back-button";}
+	//window.focus=parent_disable();
+	//window.toolbar.visible=false; 
+	//window.menubar.visible=false;
+
+	//window.history.go(1);
+	//window.history.go(-1);
+	
+	var file = _("filename").files[0];
+	if(file) 
+	{		
+
+		
+		//window.history.forward();
+		//window.history.back();
+		//setTimeout("preventBack()", 0);
+       // window.onunload=function(){null};
+
+		/*RunTimer();
+		fileSize=file.size; // провевить на hex
+		document.getElementById("btn_upload_bpr").disabled = true; 
+		//alert(file.name+" | "+file.size+" | "+file.type);
+
+		sleep(10000);
+
+		var formdata = new FormData(upload_form);
+		formdata.append("filename", file);
+		var ajax = new XMLHttpRequest();
+		ajax.upload.addEventListener("progress", progressHandler, false);
+		ajax.addEventListener("load", completeHandler, false);
+		ajax.addEventListener("error", errorHandler, false);
+		ajax.addEventListener("abort", abortHandler, false);
+		ajax.open("POST", "upload_firmware_bpr.php");
+		ajax.send(formdata);*/
+	}else {  alert(" Error.File is "+file); }
+}
+
+function progressHandler(event)
+{
+	_("loaded_n_total").innerHTML = "Uploaded "+event.loaded+" bytes of "+event.total+". File size is: "+fileSize+" bytes.";
+	var percent = (event.loaded / event.total) * 100;
+	_("progressBar").value = Math.round(percent);
+	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+}
+
+function completeHandler(event)
+{//перейтина новую страницу...
+	//_("status2").innerHTML = event.target.responseText;
+	//_("progressBar").value = 0;
+
+	stopTimer();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+	//var w = window.open("");// создаст новое окно
+	document.writeln(event.target.responseText);
+	document.close();
+}
+
+function errorHandler(event)
+{
+	_("status2").innerHTML = "Upload Failed";
+	stopTimer();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+}
+
+function abortHandler(event){
+	_("status2").innerHTML = "Upload Aborted";
+	stopTimer();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+}
+
+function OnLoad()
+{
+	window.toolbar.visible=false;//only onCreate windows
+	GetBarsInfo();
+	document.getElementById("btn_upload_bpr").disabled = false; 
+}
+
+</script>
+</head>
+<body id="body_upload" onload="OnLoad()">
+      <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
+
+      <h2><p><b> Upload kernel modules</b></p></h2>
+      <form action="upload_modules.php" method="post" enctype="multipart/form-data">
+	  <fieldset>
+	  <legend>Set kernel version:</legend>		
+	  <input type='radio' name = 'mark3' value=1 checked /> 2.6.37 </input>&nbsp;&nbsp;&nbsp;	
+	  <input type='radio' name = 'mark3' value=2 />4.9.11 </br>		
+	  </fieldset>
+      <input type="file" name="filename" accept=".ko"><br> 
+      <input type="submit" value="Upload"><br>
+      </form>
+     
+	  <h2><p><b> Upload UPU executable soft</b></p></h2>
+	  <form action="upload_bin.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>	
+
+      <h2><p><b> Upload UPU libs</b></p></h2>
+      <form action="upload_libs.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename" accept=".so"><br>
+      <input type="submit" value="Upload"><br>
+      </form>
+
+	  <h2><p><b> Upload firmware with 'upload_brp'</b></p></h2>
+	  <form id="upload_form" enctype="multipart/form-data" method="post">
+	  <input type="file" name="filename" id="filename" accept=".hex, .bin"><br>
+	  <input type="button" id="btn_upload_bpr" value="Upload File" onclick="uploadFile()"><br>
+	  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
+		  <fieldset>
+		  <legend>Usage script:</legend>		
+		  <input type='radio' name = 'mark' value=1 checked/>by using 'start_upload_bpr.sh' </br>		  	
+		  <fieldset>
+		  <legend>Set devices:</legend>		
+		  	<input type='radio' name = 'mark2' value=1 checked/>tam3517 </br>	
+		  	<input type='radio' name = 'mark2' value=2 />imx6 </br>		
+	  	  </fieldset>
+		  </fieldset>
+	  <input type='radio' name = 'mark' value=3 />Only load firmware on board</br>
+	  </br>
+	  <fieldset>  
+	  <legend>Process loading file:</legend>	
+	  <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+	  <p id="loaded_n_total">load total:</p>
+	  <div id="status">status:</div>
+	  </fieldset>
+	  <fieldset>
+	  <legend>Process running on board:</legend>	
+	  <div id="idMessage"></div>
+	  </fieldset>
+	  </br>
+	  <div id="status2">status2:</div>  
+	  </form>
+
+	  <h2><p><b> Load firmware on board (any formats)</b></p></h2>
+      <form action="load_firmware_bpr.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Load file"><br>
+      </form>	
+    <div id="info"></div>
+
+</body>
+</html>

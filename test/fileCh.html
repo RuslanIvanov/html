@@ -1,0 +1,33 @@
+<?php
+	$robots=$_POST['robots'];
+	if(isset($_POST['save'])) 
+	{
+		$fs=fopen('robots.txt',"w");
+		$text=fputs($fs,$robots);
+		fclose($fs);
+	}
+
+	$text='';
+	$f=file('robots.txt');
+	for($i=0;$i<count($f);$i++) 
+	{
+		$text="$text$f[$i]";
+	}
+?>
+
+<html>
+<head>
+	<title>correct file</title>
+</head>
+<body>
+
+<form method="POST">
+	<textarea rows="20" cols="50"  name="robots">
+	<?=$text; ?>
+	</textarea>
+
+	<input type=submit name="save" value="Save">
+</form>
+
+</body>
+</html>

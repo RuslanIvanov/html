@@ -1,0 +1,54 @@
+<html>
+<head>
+  <title>Upload file on server</title>
+</head>
+<body>
+      <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
+
+      <h2><p><b> Upload kernel (2.6.37) or (4.9.11) modules</b></p></h2>
+      <form action="upload_modules_old.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br> 
+      <input type="submit" value="Upload(2.6.37)"><br>
+      </form>
+      <p>...</p>
+      <form action="upload_modules.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload(4.9.11)"><br>
+      </form>
+	
+	  <h2><p><b> Upload UPU executable soft</b></p></h2>
+	  <form action="upload_bin.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>	
+
+      <h2><p><b> Upload UPU libs</b></p></h2>
+      <form action="upload_libs.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload"><br>
+      </form>
+
+	  <h2><p><b> Upload firmware with 'upload_brp'</b></p></h2>
+      <form action="upload_firmware_bpr.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Upload firmware"><br>
+	  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
+	  <fieldset>
+	  <legend>Usage script:</legend>		
+	  <input type='radio' name = 'mark' value=1 checked/>by using 'start_upload_bpr.sh' </br>		  	
+	  <fieldset>
+	  <legend>Set devices:</legend>		
+	  	<input type='radio' name = 'mark2' value=1 checked/>tam3517 </br>	
+	  	<input type='radio' name = 'mark2' value=2 />imx6 </br>		
+  	  </fieldset>
+	  </fieldset>
+	  <input type='radio' name = 'mark' value=3 />Only load firmware on board</br>		
+      </form>
+	  <h2><p><b> Load firmware on board</b></p></h2>
+      <form action="load_firmware_bpr.php" method="post" enctype="multipart/form-data">
+      <input type="file" name="filename"><br>
+      <input type="submit" value="Load file"><br>
+      </form>	
+
+</body>
+</html>

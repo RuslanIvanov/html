@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>First Page</title>
+    	
+	<script type="text/javascript" src="../lib/prototype.js"></script>
+	<script type="text/javascript" src="../lib/httprequest.js"></script>
+	<script language="javascript" type="text/javascript">
+
+    function preventBack() 
+	{
+            window.history.forward();
+			//window.history.back();
+			
+    }
+         
+    setTimeout("preventBack()", 0);
+         
+    	window.onunload = function () { null };// нужно
+	window.onbeforeunload = function () { alert("onbeforeunload"); }
+	window.addEventListener("beforeunload", function(e)	{  alert("beforeunload");}, false);
+    
+	//создать переменную, в которой будем хранить ссылку на объект window открытого окна
+	var myWindow;
+	function myWindowOpen()
+	{
+		 
+	  	//myWindow = window.open('waiting.html', "wait", "width=250, height=250");
+		myWindow = window.open('waiting.html', "", "toolbar=no");
+		//alert("myWindow = "+myWindow);
+		myWindow.focus(); 
+		//myWindow.document.getElementsByTagName("body")[0].focus(); 
+		//setTimeout('myWindow.focus()', 1);
+	}
+
+	function myWindowClose()
+	{
+	  	if(myWindow) 
+		{
+			myWindow.close();
+			myWindow = null;
+	  	}
+	}
+
+
+	function OnClose()
+	{
+		alert("OnClose");
+	}
+
+	//var reloaded  = function(){ alert("reload"); } //страницу перезагрузили
+	function OnLoad()
+	{		
+		alert("Load");
+		/*var loaded = sessionStorage.getItem('loaded');
+
+		if(loaded)
+		{	
+	    reloaded();
+	  } else {sessionStorage.setItem('loaded', true);*/
+		
+	}
+
+	function parent_disable() 
+	{
+		//if(myWindow && !myWindow.closed)
+		//{	myWindow.focus();
+		//alert("parent_disable");}
+	
+	}
+
+</script>
+
+</head>
+<body id="mybody" onload="OnLoad()" onFocus="parent_disable();" onclick="parent_disable();">
+    <h3>This is first page</h3>
+    <hr />
+    <a href = "b.html">Goto second Page</a>
+
+	<button onClick="myWindowOpen()">Open window</button>
+	<button onClick="myWindowClose()">Close window</button>
+	
+</body>
+</html>
