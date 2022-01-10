@@ -59,20 +59,22 @@
 		                    ref = document.getElementById("ref13");
 		                    ref.href=url;		
 
-				uploadWindow=sessionStorage.getItem('key');	 
+				//alert("key1 = "+localStorage.getItem('key'));
+				uploadWindow=localStorage.getItem('key');	 
 				
 		 }	
 
 		
 		function myWindowOpen()
 		{
+			uploadWindow=localStorage.getItem('key');
 						
-			if(!uploadWindow ) 
+			if(uploadWindow == "null") 
 			{ 
 				//alert("win  is close " + uploadWindow + " closed "+uploadWindow.closed);
 				uploadWindow=window.open('/mic_pc/upload.html','_blank', 'toolbar=no,fullscreen=yes,resizable=yes,scrollbars=yes');	
 				uploadWindow.focus();
-				sessionStorage.setItem('key', uploadWindow);
+				localStorage.setItem('key', uploadWindow);
 				
 			}else 
 			{ 
@@ -80,9 +82,11 @@
 				{
 					uploadWindow=window.open('/mic_pc/upload.html','_blank', 'toolbar=no,fullscreen=yes,resizable=yes,scrollbars=yes');	
 					uploadWindow.focus();
-					sessionStorage.setItem('key', uploadWindow);	
+					localStorage.setItem('key', uploadWindow);	
+					//alert("key2 = "+localStorage.getItem('key'));
 				}else 
 				{
+					alert("Update windows already open!!!");
 					uploadWindow.focus(); 
 				}
 			}	
@@ -92,8 +96,8 @@
 		function myWindowClose()
 		{//работаете при уходе со страницы
 
-			alert("win close " + uploadWindow); 
-			sessionStorage.setItem('key', null); 
+			//alert("win close " + uploadWindow); 
+			localStorage.setItem('key', null); 
 		  	if(uploadWindow) 
 			{
 				
@@ -101,9 +105,6 @@
 				uploadWindow = null;				
 		  	}			
 		}
-
-		
-		
 		</script>
 	</head>
 	<body onload="OnLoad()">
@@ -112,8 +113,7 @@
 		<legend>MENU:</legend>
 		
 		</br>&nbsp;&nbsp;&nbsp;
-		<a href="" id = "ref1">"upload files"</br></a>&nbsp;&nbsp;&nbsp;	
-		<a href="" id = "ref2">"reboot system"</br></a>&nbsp;&nbsp;&nbsp;
+		<!--<a href="" id = "ref1">"upload files"</br></a>&nbsp;&nbsp;&nbsp;-->
 		<a href="" id = "ref3">"UPU version"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref4">"view processes and threads"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref5">"stop program execution UPU"</br></a>&nbsp;&nbsp;&nbsp;
@@ -121,10 +121,11 @@
 		<a href="" id = "ref7">"read system log"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref8">"view pstree"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref9">"read logfile upu"</br></a>&nbsp;&nbsp;&nbsp;
+		<a href="" id = "ref12">"limit memory usage PHP"</br></a>&nbsp;&nbsp;&nbsp;
+		<a href="" id = "ref2">"reboot system"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref10">"change setting"</br></a>&nbsp;&nbsp;&nbsp;
-		<a href="" id = "ref12">"limit memory usage PHP"</br></a>&nbsp;&nbsp;&nbsp;		
 		<a href="" id = "ref14" onclick="myWindowOpen()">"upload files"</br></a>&nbsp;&nbsp;&nbsp;
-		<a href="" id = "ref13">"test"</br></a>&nbsp;&nbsp;&nbsp;
+		<!--<a href="" id = "ref13">"test"</br></a>&nbsp;&nbsp;&nbsp;-->
 		</fieldset>
 
 	</body>

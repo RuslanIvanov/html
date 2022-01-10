@@ -55,11 +55,14 @@ function makePopupWindow()
 
 function myWindowClose()
 {	
+	//alert("key3 "+localStorage.getItem('key'));
+	localStorage.setItem('key', null);
 	if(myWindow) 	
 	{
+		//localStorage.setItem('key', null);
 		myWindow.close();		
 		myWindow=null;
-    }
+    	}
 }
 
 function sleep(milliseconds) 
@@ -181,7 +184,7 @@ function uploadFile()
 		ajax.send(formdata);
 
 		
-	}else {  alert(" Error.File is "+file); }
+	} else {  alert(" Error.File is "+file); }
 }
 
 function progressHandler(event)
@@ -198,6 +201,7 @@ function completeHandler(event)
 	//_("status2").innerHTML = event.target.responseText;
 	//_("progressBar").value = 0;
 
+		
 	myWindowClose();
 	stopTimer();
 	
@@ -205,6 +209,8 @@ function completeHandler(event)
 	//var w = window.open("");// создаст новое окно
 	document.writeln(event.target.responseText);
 	document.close();
+
+	
 }
 
 function errorHandler(event)
@@ -222,7 +228,7 @@ function abortHandler(event){
 
 function OnLoad()
 {	
-	alert("OnLoad second");
+	//alert("OnLoad second");
 	parentWindow = window.parent;
 	document.getElementById("btn_upload_bpr").disabled = false; 
 	GetBarsInfo();
@@ -230,10 +236,10 @@ function OnLoad()
 	
 }
 
-
 </script> 
 </head>
-<body id="body_upload" onload="OnLoad()" onunload="UnLoad()" > 
+<body id="body_upload" onload="OnLoad()" onunload="UnLoad()" >
+<!--<body id="body_upload" onload="OnLoad()" > -->
       <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
 
       <h2><p><b> Upload kernel modules</b></p></h2>
@@ -300,22 +306,24 @@ function OnLoad()
 <script>
 	
 	parentWindowBody = window.parent;
-	alert("body (first): "+parentWindowBody);
+	//alert("body (first): "+parentWindowBody);
 
-	window.onbeforeunload = function(e)
-	{
+	//window.onbeforeunload = function(e)
+	//{
 		//alert("onbeforeunload");// this don't work
-		parentWindowBody.myWindowClose();
+		//parentWindowBody.myWindowClose();
+		//localStorage.setItem('key', null); 
 
-		var dialogText = 'Exit &';
-		e.returnValue = dialogText;
-  		return dialogText;		
-	}
+	//	var dialogText = 'Exit &';
+	//	e.returnValue = dialogText;
+  	//	return dialogText;		
+	//}
 	
 	function UnLoad()
 	{
-   	     	alert("UnLoad windows");
-       		parentWindowBody.myWindowClose();
+   	     	//alert("UnLoad windows");
+       		//parentWindowBody.myWindowClose();
+		localStorage.setItem('key', null); 
 	}
 	
 </script>

@@ -13,8 +13,8 @@
 </head>
 <body>
 
-	<h1> <a href="upload.html?status=1">BACK</a></h1>
-    <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
+	<!--<h1> <a href="upload.html?status=1">BACK</a></h1>-->
+    	<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
    	<h1> <a href="logfirmwarebrp.php?status=3">LOG FIRMWARE</a></h1>
 
 <?php
@@ -22,16 +22,16 @@
 	function fwrite_stream($fp, $string, $len) 
 	{
 		$fwrite = 0;
-	    for ($written = 0; $written < $len; $written += $fwrite) 
+	    	for ($written = 0; $written < $len; $written += $fwrite) 
 		{
-	        $fwrite = fwrite($fp, $string[$written], $len - $written);
-	        if ($fwrite === false) 
+			$fwrite = fwrite($fp, $string[$written], $len - $written);
+			if ($fwrite === false) 
 			{
-	            return $written;
-	        }
+			    return $written;
+			}
 		}
 		return $written;
-    }
+    	}
 
 
 	function fread_reply2($fp)

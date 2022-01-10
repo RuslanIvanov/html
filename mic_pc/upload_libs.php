@@ -3,8 +3,8 @@
 	<title>Update result lib</title>
 </head>
 <body>
-    <h1> <a href="upload.html?status=1">BACK</a></h1>
-    <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
+    <!--<h1> <a href="upload.html?status=1">BACK</a></h1>-->
+    <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
 
 <?php
 	   if($_FILES["filename"]["size"] > 1024*100*1024)
