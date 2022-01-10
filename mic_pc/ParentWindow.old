@@ -6,15 +6,18 @@
 			var uploadWindow=null;
 			var data="";
 			var refWindow=null;
-			
 		 	function OnLoad()
     		{
 				
 				ipaddr=document.domain;	
 		
 				var url = "http://"+ipaddr+"/mic_pc/Reboot.htm";
-		        var ref = document.getElementById("ref2");
-		        	         ref.href=url;			
+		        	var ref = document.getElementById("ref2");
+		                  ref.href=url;
+
+				//url = "http://"+ipaddr+"/mic_pc/upload.html";
+				//			ref = document.getElementById("ref1");
+		              	//	ref.href=url;		
 
 				url = "http://"+ipaddr+"/mic_pc/upuver.php";
 		                    ref = document.getElementById("ref3");
@@ -50,25 +53,28 @@
 
 				url = "http://"+ipaddr+"/mic_pc/testMemory.php";
 		                    var ref = document.getElementById("ref12");
-		                    ref.href=url;				
+		                    ref.href=url;
 
-				//alert("key_"+document.domain);
-				//alert("key1 = "+localStorage.getItem("key_"+document.domain));
-				uploadWindow=localStorage.getItem("key_"+document.domain);				
-		 }
+				//url = "http://"+ipaddr+"/mic_pc/a.html";
+		                //    ref = document.getElementById("ref13");
+		                //    ref.href=url;		
+
+				//alert("key1 = "+localStorage.getItem('key'));
+				uploadWindow=localStorage.getItem('key');	 
+				
+		 }	
 
 		
 		function myWindowOpen()
 		{
-			uploadWindow=localStorage.getItem("key_"+ipaddr);
-			//alert("open key_"+ipaddr);			
-			if((uploadWindow == "null") || !uploadWindow)			
+			uploadWindow=localStorage.getItem('key');
+						
+			if(uploadWindow == "null") 
 			{ 
 				//alert("win  is close " + uploadWindow + " closed "+uploadWindow.closed);
 				uploadWindow=window.open('/mic_pc/upload.html','_blank', 'toolbar=no,fullscreen=yes,resizable=yes,scrollbars=yes');	
 				uploadWindow.focus();
-				localStorage.setItem("key_"+ipaddr, uploadWindow);
-				//alert("key5 = "+localStorage.getItem("key_"+ipaddr));
+				localStorage.setItem('key', uploadWindow);
 				
 			}else 
 			{ 
@@ -76,11 +82,11 @@
 				{
 					uploadWindow=window.open('/mic_pc/upload.html','_blank', 'toolbar=no,fullscreen=yes,resizable=yes,scrollbars=yes');	
 					uploadWindow.focus();
-					localStorage.setItem("key_"+ipaddr, uploadWindow);	
-					//alert("key2 = "+localStorage.getItem("key_"+ipaddr));
+					localStorage.setItem('key', uploadWindow);	
+					//alert("key2 = "+localStorage.getItem('key'));
 				}else 
 				{
-					alert("Update windows already open for address "+ ipaddr +" !!!");
+					alert("Update windows already open!!!");
 					uploadWindow.focus(); 
 				}
 			}	
@@ -91,9 +97,10 @@
 		{//работаете при уходе со страницы
 
 			//alert("win close " + uploadWindow); 
-			localStorage.setItem("key_"+ipaddr, null); 
+			localStorage.setItem('key', null); 
 		  	if(uploadWindow) 
 			{
+				
 				//uploadWindow.close();
 				uploadWindow = null;				
 		  	}			
@@ -105,7 +112,8 @@
 		<fieldset>
 		<legend>MENU:</legend>
 		
-		</br>&nbsp;&nbsp;&nbsp;		
+		</br>&nbsp;&nbsp;&nbsp;
+		<!--<a href="" id = "ref1">"upload files"</br></a>&nbsp;&nbsp;&nbsp;-->
 		<a href="" id = "ref3">"UPU version"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref4">"view processes and threads"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref5">"stop program execution UPU"</br></a>&nbsp;&nbsp;&nbsp;
@@ -116,7 +124,8 @@
 		<a href="" id = "ref12">"limit memory usage PHP"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref2">"reboot system"</br></a>&nbsp;&nbsp;&nbsp;
 		<a href="" id = "ref10">"change setting"</br></a>&nbsp;&nbsp;&nbsp;
-		<a href="" id = "ref14" onclick="myWindowOpen()">"upload files"</br></a>&nbsp;&nbsp;&nbsp;		
+		<a href="" id = "ref14" onclick="myWindowOpen()">"upload files"</br></a>&nbsp;&nbsp;&nbsp;
+		<!--<a href="" id = "ref13">"test"</br></a>&nbsp;&nbsp;&nbsp;-->
 		</fieldset>
 
 	</body>

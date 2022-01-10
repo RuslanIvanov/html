@@ -55,14 +55,14 @@ function makePopupWindow()
 
 function myWindowClose()
 {	
-	//alert("key3 "+localStorage.getItem('key'));
-	localStorage.setItem('key', null);
+	//alert("key3 "+localStorage.getItem("key_"+document.domain));
+	localStorage.setItem("key_"+document.domain, null);
 	if(myWindow) 	
 	{
-		//localStorage.setItem('key', null);
+		//localStorage.setItem("key_"+document.domain, null);
 		myWindow.close();		
 		myWindow=null;
-    	}
+    }
 }
 
 function sleep(milliseconds) 
@@ -152,7 +152,7 @@ function GetBarsInfo()
                 info.innerHTML += "Tool Bar: " + vis + " "+window.toolbar.visible+" </br >";
             }
 
-	    info.innerHTML += "key: " +sessionStorage.getItem('key')+" </br >"; 
+	    info.innerHTML += "key: " +sessionStorage.getItem("key_"+document.domain)+" </br >"; 
 	    info.innerHTML += "parentWindow: " +parentWindow+",name "+parentWindow.windowName+" </br >"; 
 }
 
@@ -200,7 +200,6 @@ function completeHandler(event)
 {//перейтина новую страницу...
 	//_("status2").innerHTML = event.target.responseText;
 	//_("progressBar").value = 0;
-
 		
 	myWindowClose();
 	stopTimer();
@@ -208,9 +207,7 @@ function completeHandler(event)
 	document.getElementById("btn_upload_bpr").disabled = false; 
 	//var w = window.open("");// создаст новое окно
 	document.writeln(event.target.responseText);
-	document.close();
-
-	
+	document.close();	
 }
 
 function errorHandler(event)
@@ -227,19 +224,18 @@ function abortHandler(event){
 }
 
 function OnLoad()
-{	
+{
 	//alert("OnLoad second");
 	parentWindow = window.parent;
 	document.getElementById("btn_upload_bpr").disabled = false; 
 	GetBarsInfo();
 	//addEventListener("beforeunload", myScript);
-	
 }
 
 </script> 
 </head>
 <body id="body_upload" onload="OnLoad()" onunload="UnLoad()" >
-<!--<body id="body_upload" onload="OnLoad()" > -->
+	<!--<body id="body_upload" onload="OnLoad()" > -->
       <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
 
       <h2><p><b> Upload kernel modules</b></p></h2>
@@ -312,7 +308,7 @@ function OnLoad()
 	//{
 		//alert("onbeforeunload");// this don't work
 		//parentWindowBody.myWindowClose();
-		//localStorage.setItem('key', null); 
+		//localStorage.setItem("key_"+document.domain, null); 
 
 	//	var dialogText = 'Exit &';
 	//	e.returnValue = dialogText;
@@ -321,9 +317,9 @@ function OnLoad()
 	
 	function UnLoad()
 	{
-   	     	//alert("UnLoad windows");
-       		//parentWindowBody.myWindowClose();
-		localStorage.setItem('key', null); 
+   	    //alert("UnLoad windows");
+       	//parentWindowBody.myWindowClose();
+		localStorage.setItem("key_"+document.domain, null); 
 	}
 	
 </script>

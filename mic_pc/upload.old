@@ -1,5 +1,23 @@
+<!DOCTYPE html>
 <html>
 <head>
+<style>
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}	
+/*body {overflow: hidden; }*//* Hide scrollbars */
+</style>
+
 <title>Upload file on server</title>
 <script type="text/javascript" src="../lib/prototype.js"></script>
 <script type="text/javascript" src="../lib/httprequest.js"></script>
@@ -11,14 +29,49 @@ var idTimeout = 0;
 var count=0;
 var fStartTimer=false;
 var fileSize=0;
+var myWindow=null;
+var parentWindow = null;
 
+function on() 
+{
+	document.getElementById("overlay").style.display = "block";
+}
 
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
+function off() 
+{
+	document.getElementById("overlay").style.display = "none";
+} 
+
+function makePopupWindow()
+{
+	var w = 280, h = 200,
+	left = Number((screen.width/2)-(w/2)), tops = Number((screen.height/2)-(h/2));
+        myWindow = window.open
+		('waiting.html', 'Waiting','toolbar=no, location=no, directories=no, status=no, menubar=no,scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+tops+', left='+left);
+
+	//myWindow = window.open('waiting.html', 'wait', "width=250, height=250");	
+	myWindow.focus(); 
+}
+
+function myWindowClose()
+{	
+	//alert("key3 "+localStorage.getItem('key'));
+	localStorage.setItem('key', null);
+	if(myWindow) 	
+	{
+		//localStorage.setItem('key', null);
+		myWindow.close();		
+		myWindow=null;
+    	}
+}
+
+function sleep(milliseconds) 
+{
+	  const date = Date.now();
+	  let currentDate = null;
+	  do{
+	  	  currentDate = Date.now();
+	  } while (currentDate - date < milliseconds);
 }
 
 function clear()
@@ -32,15 +85,16 @@ function startTimer()
 	{   
             $('idMessage').update("[0"+"]");
             idTimeout = setInterval(function(){ run(); }, 1000);
-            fStartTimer=true;
+            fStartTimer=true;	   
 	}
 }
         
 function stopTimer()
 {
-	count=0;
+    count=0;
     clearInterval(idTimeout);
     fStartTimer = false;
+    off();   
 }
         
 function run()
@@ -48,6 +102,7 @@ function run()
 	count++;
 	$('idMessage').update("["+count+"]");
 	update();
+
 }
      
 function RunTimer()
@@ -57,78 +112,13 @@ function RunTimer()
       
        setTimeout("", 1000);
        startTimer();
+       on();
 }  
 
 function _(el)
 {
 	return document.getElementById(el);
 }
-
-function parent_disable() {
-
-	var popupWindow = window;
-if(popupWindow && !popupWindow.closed)
-popupWindow.focus();
-}
-
-function preventBack(){window.history.forward();}
-    
-function showmenu()
-{
- //netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
- window.menubar.visible=true;
- window.directories.visible=true;
- window.statusbar.visible=true;
- window.toolbar.visible=true;
- window.locationbar.visible=true;
- window.personalbar.visible=true;
- window.scrollbars.visible=true;
- //netscape.security.PrivilegeManager.disablePrivilege("UniversalBrowserWrite");
-}   
-
-function hidemenu()
-{
- //netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserWrite");
- window.menubar.visible=false;
- window.directories.visible=false;
- window.statusbar.visible=false;
- window.toolbar.visible=false;
- window.locationbar.visible=false;
- window.personalbar.visible=false;
- window.scrollbars.visible=false;
- //netscape.security.PrivilegeManager.disablePrivilege("UniversalBrowserWrite");
-
-}
-
-
-//window.onpopstate = function () 
-//{
-    //window.history.go(1);  //window.history.go(0);  
-//};
-/*<script type="text/javascript">  function preventBack() {window.history.forward();}  setTimeout("preventBack()", 0);  window.onunload = function () {null};<script>	*/
-//function preventBack() 
-//{
-    // window.history.go(0);
-//}
-         
-//setTimeout("preventBack()", 90);
-         
-//window.onunload = function () { null };
-
-/*
-Note
-
-history.go(0) reloads the page.
-
-history.go(-1) is the same as history.back().
-
-history.go(1) is the same as history.forward().
-*/
-
-/*window.onbeforeunload = confirmExit;
-    function confirmExit() {
-        return "You have attempted to leave this page. Are you sure??";
-    }*/
 
 function GetBarsInfo() 
 {
@@ -161,50 +151,28 @@ function GetBarsInfo()
                 var vis = window.toolbar.visible ? "visible" : "not visible";
                 info.innerHTML += "Tool Bar: " + vis + " "+window.toolbar.visible+" </br >";
             }
+
+	    info.innerHTML += "key: " +sessionStorage.getItem('key')+" </br >"; 
+	    info.innerHTML += "parentWindow: " +parentWindow+",name "+parentWindow.windowName+" </br >"; 
 }
 
 function uploadFile()
 {
 	_("progressBar").value = 0;
 	_("status2").innerHTML="";
-
-
-	
-	//window.history.pushState(null, null, window.location.href);
-	//if(window.toolbar)
-	//{
-   // 	var vis = window.toolbar.visible ? "visible" : "not visible";
-	//	info.innerHTML += "Tool Bar: "+vis+"</br>";
-	//}
-
-	//window.history.deleteall;
-	//window.location.hash="no-back-button";
-	//window.location.hash="Again-no-back-button";//for google chrome
-	//window.onhashchange=function(){window.location.hash="no-back-button";}
-	//window.focus=parent_disable();
-	//window.toolbar.visible=false; 
-	//window.menubar.visible=false;
-
-	//window.history.go(1);
-	//window.history.go(-1);
 	
 	var file = _("filename").files[0];
 	if(file) 
-	{		
+	{
 
-		
-		//window.history.forward();
-		//window.history.back();
-		//setTimeout("preventBack()", 0);
-       // window.onunload=function(){null};
+		makePopupWindow();
+		setTimeout(myWindowClose, 12000000);
 
-		/*RunTimer();
+		RunTimer();				
+	
 		fileSize=file.size; // провевить на hex
 		document.getElementById("btn_upload_bpr").disabled = true; 
-		//alert(file.name+" | "+file.size+" | "+file.type);
-
-		sleep(10000);
-
+		
 		var formdata = new FormData(upload_form);
 		formdata.append("filename", file);
 		var ajax = new XMLHttpRequest();
@@ -213,8 +181,10 @@ function uploadFile()
 		ajax.addEventListener("error", errorHandler, false);
 		ajax.addEventListener("abort", abortHandler, false);
 		ajax.open("POST", "upload_firmware_bpr.php");
-		ajax.send(formdata);*/
-	}else {  alert(" Error.File is "+file); }
+		ajax.send(formdata);
+
+		
+	} else {  alert(" Error.File is "+file); }
 }
 
 function progressHandler(event)
@@ -223,6 +193,7 @@ function progressHandler(event)
 	var percent = (event.loaded / event.total) * 100;
 	_("progressBar").value = Math.round(percent);
 	_("status").innerHTML = Math.round(percent)+"% uploaded... please wait";
+
 }
 
 function completeHandler(event)
@@ -230,11 +201,16 @@ function completeHandler(event)
 	//_("status2").innerHTML = event.target.responseText;
 	//_("progressBar").value = 0;
 
+		
+	myWindowClose();
 	stopTimer();
+	
 	document.getElementById("btn_upload_bpr").disabled = false; 
 	//var w = window.open("");// создаст новое окно
 	document.writeln(event.target.responseText);
 	document.close();
+
+	
 }
 
 function errorHandler(event)
@@ -251,16 +227,20 @@ function abortHandler(event){
 }
 
 function OnLoad()
-{
-	window.toolbar.visible=false;//only onCreate windows
-	GetBarsInfo();
+{	
+	//alert("OnLoad second");
+	parentWindow = window.parent;
 	document.getElementById("btn_upload_bpr").disabled = false; 
+	GetBarsInfo();
+	//addEventListener("beforeunload", myScript);
+	
 }
 
-</script>
+</script> 
 </head>
-<body id="body_upload" onload="OnLoad()">
-      <h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>
+<body id="body_upload" onload="OnLoad()" onunload="UnLoad()" >
+<!--<body id="body_upload" onload="OnLoad()" > -->
+      <!--<h1> <a href="ParentWindow.htm?status=2">BACK MENU</a></h1>-->
 
       <h2><p><b> Upload kernel modules</b></p></h2>
       <form action="upload_modules.php" method="post" enctype="multipart/form-data">
@@ -287,7 +267,7 @@ function OnLoad()
 
 	  <h2><p><b> Upload firmware with 'upload_brp'</b></p></h2>
 	  <form id="upload_form" enctype="multipart/form-data" method="post">
-	  <input type="file" name="filename" id="filename" accept=".hex, .bin"><br>
+  		<input type="file" name="filename" id="filename" accept=".hex, .bin"><br>
 	  <input type="button" id="btn_upload_bpr" value="Upload File" onclick="uploadFile()"><br>
 	  <input type='radio' name = 'mark' value=0 />by using 'upload_bpr' </br>
 		  <fieldset>
@@ -320,7 +300,33 @@ function OnLoad()
       <input type="file" name="filename"><br>
       <input type="submit" value="Load file"><br>
       </form>	
-    <div id="info"></div>
+      <div id="info"></div>
+      <div id="overlay"></div>    
+
+<script>
+	
+	parentWindowBody = window.parent;
+	//alert("body (first): "+parentWindowBody);
+
+	//window.onbeforeunload = function(e)
+	//{
+		//alert("onbeforeunload");// this don't work
+		//parentWindowBody.myWindowClose();
+		//localStorage.setItem('key', null); 
+
+	//	var dialogText = 'Exit &';
+	//	e.returnValue = dialogText;
+  	//	return dialogText;		
+	//}
+	
+	function UnLoad()
+	{
+   	     	//alert("UnLoad windows");
+       		//parentWindowBody.myWindowClose();
+		localStorage.setItem('key', null); 
+	}
+	
+</script>
 
 </body>
 </html>
